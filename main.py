@@ -38,76 +38,30 @@ PURPLE = (130, 55, 190)
 PINK = (220, 60, 130)
 CYAN = (80, 230, 255)
 
-dragon_image = pygame.image.load(
-    "assets/dragon.png"
-).convert_alpha()
-
-gem_image = pygame.image.load(
-    "assets/gem.png"
-).convert_alpha()
-
-tower_top_image = pygame.image.load(
-    "assets/tower_top.png"
-).convert_alpha()
-
-tower_bottom_image = pygame.image.load(
-    "assets/tower_bottom.png"
-).convert_alpha()
+dragon_image = pygame.image.load("assets/dragon.png").convert_alpha()
+gem_image = pygame.image.load("assets/gem.png").convert_alpha()
+tower_top_image = pygame.image.load("assets/tower_top.png").convert_alpha()
+tower_bottom_image = pygame.image.load("assets/tower_bottom.png").convert_alpha()
 
 try:
-    level1_bg = pygame.image.load(
-        "assets/level1_bg.png"
-    ).convert()
+    level1_bg = pygame.image.load("assets/level1_bg.png").convert()
+    level2_bg = pygame.image.load("assets/level2_bg.png").convert()
+    level3_bg = pygame.image.load("assets/level3_bg.png").convert()
+    cover_bg = pygame.image.load("assets/cover_bg.png").convert()
 
-    level2_bg = pygame.image.load(
-        "assets/level2_bg.png"
-    ).convert()
-
-    level3_bg = pygame.image.load(
-        "assets/level3_bg.png"
-    ).convert()
-
-    cover_bg = pygame.image.load(
-        "assets/cover_bg.png"
-    ).convert()
-
-    level1_bg = pygame.transform.smoothscale(
-        level1_bg,
-        (WIDTH, HEIGHT)
-    )
-
-    level2_bg = pygame.transform.smoothscale(
-        level2_bg,
-        (WIDTH, HEIGHT)
-    )
-
-    level3_bg = pygame.transform.smoothscale(
-        level3_bg,
-        (WIDTH, HEIGHT)
-    )
-
-    cover_bg = pygame.transform.smoothscale(
-        cover_bg,
-        (WIDTH, HEIGHT)
-    )
-
+    level1_bg = pygame.transform.smoothscale(level1_bg, (WIDTH, HEIGHT))
+    level2_bg = pygame.transform.smoothscale(level2_bg, (WIDTH, HEIGHT))
+    level3_bg = pygame.transform.smoothscale(level3_bg, (WIDTH, HEIGHT))
+    cover_bg = pygame.transform.smoothscale(cover_bg, (WIDTH, HEIGHT))
 except (pygame.error, FileNotFoundError):
     level1_bg = None
     level2_bg = None
     level3_bg = None
     cover_bg = None
 
-dragon_image = pygame.transform.smoothscale(
-    dragon_image,
-    (75, 60)
-)
+dragon_image = pygame.transform.smoothscale(dragon_image, (75, 60))
+gem_image = pygame.transform.smoothscale(gem_image, (32, 32))
 
-gem_image = pygame.transform.smoothscale(
-    gem_image,
-    (32, 32)
-)
-
-# FINAL CASTLE SIZE
 TOWER_WIDTH = 230
 TOWER_HEIGHT = 500
 
@@ -125,11 +79,8 @@ tower_bottom_image = pygame.transform.smoothscale(
     (TOWER_WIDTH, TOWER_HEIGHT)
 )
 
-def create_tone(
-    frequency,
-    duration,
-    volume=0.25
-):
+
+def create_tone(frequency, duration, volume=0.25):
     if not SOUND_ENABLED:
         return None
 
@@ -142,19 +93,12 @@ def create_tone(
 
         fade_in = min(
             1,
-            i / max(
-                1,
-                int(rate * 0.02)
-            )
+            i / max(1, int(rate * 0.02))
         )
 
         fade_out = min(
             1,
-            (samples - i)
-            / max(
-                1,
-                int(rate * 0.05)
-            )
+            (samples - i) / max(1, int(rate * 0.05))
         )
 
         envelope = fade_in * fade_out
@@ -164,26 +108,15 @@ def create_tone(
             * volume
             * envelope
             * math.sin(
-                2
-                * math.pi
-                * frequency
-                * t
+                2 * math.pi * frequency * t
             )
         )
 
-        data.extend(
-            struct.pack(
-                "<h",
-                value
-            )
-        )
+        data.extend(struct.pack("<h", value))
 
     buffer = io.BytesIO()
 
-    with wave.open(
-        buffer,
-        "wb"
-    ) as wav:
+    with wave.open(buffer, "wb") as wav:
         wav.setnchannels(1)
         wav.setsampwidth(2)
         wav.setframerate(rate)
@@ -196,6 +129,7 @@ def create_tone(
     except pygame.error:
         return None
 
+
 def play_sound(sound):
     if SOUND_ENABLED and sound:
         try:
@@ -203,53 +137,15 @@ def play_sound(sound):
         except pygame.error:
             pass
 
-flap_sound = create_tone(
-    520,
-    0.08,
-    0.22
-)
 
-gem_sound = create_tone(
-    900,
-    0.12,
-    0.25
-)
-
-hit_sound = create_tone(
-    150,
-    0.18,
-    0.28
-)
-
-fireball_sound = create_tone(
-    240,
-    0.10,
-    0.20
-)
-
-boss_hit_sound = create_tone(
-    750,
-    0.10,
-    0.25
-)
-
-warning_sound = create_tone(
-    300,
-    0.35,
-    0.25
-)
-
-victory_sound = create_tone(
-    1000,
-    0.45,
-    0.25
-)
-
-level_sound = create_tone(
-    650,
-    0.22,
-    0.22
-)
+flap_sound = create_tone(520, 0.08, 0.22)
+gem_sound = create_tone(900, 0.12, 0.25)
+hit_sound = create_tone(150, 0.18, 0.28)
+fireball_sound = create_tone(240, 0.10, 0.20)
+boss_hit_sound = create_tone(750, 0.10, 0.25)
+warning_sound = create_tone(300, 0.35, 0.25)
+victory_sound = create_tone(1000, 0.45, 0.25)
+level_sound = create_tone(650, 0.22, 0.22)
 
 dragon_x = 180
 dragon_y = 300
@@ -280,6 +176,10 @@ level_transition = False
 level_transition_timer = 0
 level_transition_duration = 1800
 
+countdown_active = False
+countdown_start_time = 0
+countdown_duration = 4000
+
 screen_shake = 0
 damage_flash = 0
 
@@ -289,8 +189,9 @@ warning_start_time = 0
 
 boss_x = 760
 boss_y = 300
-boss_hp = 10
-boss_max_hp = 10
+
+boss_hp = 5
+boss_max_hp = 5
 
 boss_entering = False
 boss_enter_start = 0
@@ -314,19 +215,17 @@ particles = []
 gem_particles = []
 fire_trails = []
 
+victory_sound_played = False
+
+
 def damage_effect():
-    global screen_shake
-    global damage_flash
+    global screen_shake, damage_flash
 
     screen_shake = 12
     damage_flash = 170
 
-def particle_burst(
-    x,
-    y,
-    color,
-    amount=10
-):
+
+def particle_burst(x, y, color, amount=10):
     for _ in range(amount):
         particles.append({
             "x": x,
@@ -338,6 +237,7 @@ def particle_burst(
             "size": random.randint(2, 5)
         })
 
+
 def update_particles():
     for p in particles[:]:
         p["x"] += p["vx"]
@@ -348,17 +248,16 @@ def update_particles():
         if p["life"] <= 0:
             particles.remove(p)
 
+
 def draw_particles():
     for p in particles:
         pygame.draw.circle(
             screen,
             p["color"],
-            (
-                int(p["x"]),
-                int(p["y"])
-            ),
+            (int(p["x"]), int(p["y"])),
             p["size"]
         )
+
 
 def update_gem_particles():
     for p in gem_particles[:]:
@@ -369,17 +268,16 @@ def update_gem_particles():
         if p["life"] <= 0:
             gem_particles.remove(p)
 
+
 def draw_gem_particles():
     for p in gem_particles:
         pygame.draw.circle(
             screen,
             YELLOW,
-            (
-                int(p["x"]),
-                int(p["y"])
-            ),
+            (int(p["x"]), int(p["y"])),
             3
         )
+
 
 def gem_burst(x, y):
     for _ in range(14):
@@ -391,12 +289,14 @@ def gem_burst(x, y):
             "life": random.randint(20, 40)
         })
 
+
 def add_fire_trail(x, y):
     fire_trails.append({
         "x": x,
         "y": y,
         "life": 18
     })
+
 
 def update_fire_trails():
     for p in fire_trails[:]:
@@ -405,20 +305,100 @@ def update_fire_trails():
         if p["life"] <= 0:
             fire_trails.remove(p)
 
+
 def draw_fire_trails():
     for p in fire_trails:
         pygame.draw.circle(
             screen,
             ORANGE,
-            (
-                int(p["x"]),
-                int(p["y"])
-            ),
-            max(
-                2,
-                p["life"] // 3
-            )
+            (int(p["x"]), int(p["y"])),
+            max(2, p["life"] // 3)
         )
+
+
+def draw_hearts(x, y):
+    for i in range(3):
+        heart_x = x + i * 38
+
+        if i < hearts:
+            color = RED
+
+            pygame.draw.circle(
+                screen,
+                color,
+                (heart_x + 9, y + 8),
+                9
+            )
+
+            pygame.draw.circle(
+                screen,
+                color,
+                (heart_x + 23, y + 8),
+                9
+            )
+
+            pygame.draw.polygon(
+                screen,
+                color,
+                [
+                    (heart_x, y + 10),
+                    (heart_x + 32, y + 10),
+                    (heart_x + 16, y + 30)
+                ]
+            )
+
+        else:
+            pygame.draw.circle(
+                screen,
+                (75, 25, 35),
+                (heart_x + 9, y + 8),
+                9,
+                2
+            )
+
+            pygame.draw.circle(
+                screen,
+                (75, 25, 35),
+                (heart_x + 23, y + 8),
+                9,
+                2
+            )
+
+            pygame.draw.polygon(
+                screen,
+                (75, 25, 35),
+                [
+                    (heart_x, y + 10),
+                    (heart_x + 32, y + 10),
+                    (heart_x + 16, y + 30)
+                ],
+                2
+            )
+
+
+def lose_heart():
+    global hearts
+    global combo
+    global combo_multiplier
+    global game_over
+
+    if hearts <= 0:
+        return
+
+    hearts -= 1
+
+    combo = 0
+    combo_multiplier = 1
+
+    damage_effect()
+
+    play_sound(hit_sound)
+
+    if hearts <= 0:
+        hearts = 0
+        game_over = True
+        update_high_score()
+
 
 def reset_game():
     global dragon_y
@@ -450,6 +430,8 @@ def reset_game():
     global level_transition_timer
     global boss_entering
     global victory_sound_played
+    global countdown_active
+    global countdown_start_time
 
     dragon_y = 300
     dragon_velocity = 0
@@ -467,7 +449,6 @@ def reset_game():
     boss_fight = False
 
     boss_hp = boss_max_hp
-
     boss_x = 760
     boss_y = 300
 
@@ -486,24 +467,28 @@ def reset_game():
 
     combo = 0
     combo_multiplier = 1
-
     last_gem_time = 0
 
     combo_popup = ""
     combo_popup_timer = 0
 
-    level_transition = False
+    level_transition = True
     level_transition_timer = 0
 
     boss_entering = False
 
     victory_sound_played = False
 
+    countdown_active = True
+    countdown_start_time = pygame.time.get_ticks()
+
+
 def update_high_score():
     global high_score
 
     if score > high_score:
         high_score = score
+
 
 def update_level():
     global level
@@ -514,10 +499,8 @@ def update_level():
 
     if score < 10:
         new_level = 1
-
     elif score < 25:
         new_level = 2
-
     elif score < 30:
         new_level = 3
 
@@ -525,12 +508,10 @@ def update_level():
         level = new_level
 
         level_transition = True
-
-        level_transition_timer = (
-            pygame.time.get_ticks()
-        )
+        level_transition_timer = pygame.time.get_ticks()
 
         play_sound(level_sound)
+
 
 def collect_gem():
     global combo
@@ -542,10 +523,7 @@ def collect_gem():
 
     now = pygame.time.get_ticks()
 
-    if (
-        now - last_gem_time
-        <= combo_timeout
-    ):
+    if now - last_gem_time <= combo_timeout:
         combo += 1
     else:
         combo = 1
@@ -559,17 +537,12 @@ def collect_gem():
 
     score += combo_multiplier
 
-    combo_popup = (
-        f"COMBO x{combo_multiplier}"
-    )
-
-    combo_popup_timer = (
-        now + 1000
-    )
+    combo_popup = f"COMBO x{combo_multiplier}"
+    combo_popup_timer = now + 1000
 
     update_high_score()
-
     play_sound(gem_sound)
+
 
 def update_combo():
     global combo
@@ -584,43 +557,24 @@ def update_combo():
             combo = 0
             combo_multiplier = 1
 
+
 def draw_background():
 
-    if (
-        level == 1
-        and level1_bg is not None
-    ):
-        screen.blit(
-            level1_bg,
-            (0, 0)
-        )
+    if level == 1 and level1_bg is not None:
+        screen.blit(level1_bg, (0, 0))
         return
 
-    if (
-        level == 2
-        and level2_bg is not None
-    ):
-        screen.blit(
-            level2_bg,
-            (0, 0)
-        )
+    if level == 2 and level2_bg is not None:
+        screen.blit(level2_bg, (0, 0))
         return
 
-    if (
-        level >= 3
-        and level3_bg is not None
-    ):
-        screen.blit(
-            level3_bg,
-            (0, 0)
-        )
+    if level >= 3 and level3_bg is not None:
+        screen.blit(level3_bg, (0, 0))
         return
 
     if level == 1:
 
-        screen.fill(
-            (25, 45, 75)
-        )
+        screen.fill((25, 45, 75))
 
         pygame.draw.circle(
             screen,
@@ -636,11 +590,7 @@ def draw_background():
             55
         )
 
-        for x in range(
-            0,
-            WIDTH,
-            120
-        ):
+        for x in range(0, WIDTH, 120):
             pygame.draw.polygon(
                 screen,
                 (20, 55, 55),
@@ -659,9 +609,7 @@ def draw_background():
 
     elif level == 2:
 
-        screen.fill(
-            (38, 25, 55)
-        )
+        screen.fill((38, 25, 55))
 
         pygame.draw.circle(
             screen,
@@ -670,11 +618,7 @@ def draw_background():
             65
         )
 
-        for x in range(
-            0,
-            WIDTH,
-            130
-        ):
+        for x in range(0, WIDTH, 130):
             pygame.draw.rect(
                 screen,
                 (20, 18, 30),
@@ -699,9 +643,7 @@ def draw_background():
 
     else:
 
-        screen.fill(
-            (65, 18, 20)
-        )
+        screen.fill((65, 18, 20))
 
         pygame.draw.circle(
             screen,
@@ -710,11 +652,7 @@ def draw_background():
             70
         )
 
-        for x in range(
-            0,
-            WIDTH,
-            100
-        ):
+        for x in range(0, WIDTH, 100):
             pygame.draw.polygon(
                 screen,
                 (110, 25, 15),
@@ -731,21 +669,17 @@ def draw_background():
             (0, 540, WIDTH, 60)
         )
 
+
 def spawn_tower():
 
     if score < 10:
         gap = 210
-
     elif score < 25:
         gap = 180
-
     else:
         gap = 155
 
-    top_height = random.randint(
-        80,
-        310
-    )
+    top_height = random.randint(80, 310)
 
     towers.append({
         "x": WIDTH,
@@ -756,31 +690,24 @@ def spawn_tower():
 
     gems.append({
         "x": WIDTH + 64,
-        "y": (
-            top_height
-            + gap // 2
-            - 16
-        ),
+        "y": top_height + gap // 2 - 16,
         "collected": False,
         "angle": random.random() * 6
     })
+
 
 def draw_boss():
 
     pulse = int(
         math.sin(
-            pygame.time.get_ticks()
-            / 180
+            pygame.time.get_ticks() / 180
         ) * 8
     )
 
     pygame.draw.circle(
         screen,
         (80, 10, 100),
-        (
-            int(boss_x),
-            int(boss_y)
-        ),
+        (int(boss_x), int(boss_y)),
         80 + pulse
     )
 
@@ -788,26 +715,11 @@ def draw_boss():
         screen,
         (75, 15, 95),
         [
-            (
-                boss_x - 20,
-                boss_y - 25
-            ),
-            (
-                boss_x - 120,
-                boss_y - 100
-            ),
-            (
-                boss_x - 80,
-                boss_y - 5
-            ),
-            (
-                boss_x - 125,
-                boss_y + 70
-            ),
-            (
-                boss_x - 10,
-                boss_y + 30
-            )
+            (boss_x - 20, boss_y - 25),
+            (boss_x - 120, boss_y - 100),
+            (boss_x - 80, boss_y - 5),
+            (boss_x - 125, boss_y + 70),
+            (boss_x - 10, boss_y + 30)
         ]
     )
 
@@ -815,26 +727,11 @@ def draw_boss():
         screen,
         (75, 15, 95),
         [
-            (
-                boss_x + 20,
-                boss_y - 25
-            ),
-            (
-                boss_x + 120,
-                boss_y - 100
-            ),
-            (
-                boss_x + 80,
-                boss_y - 5
-            ),
-            (
-                boss_x + 125,
-                boss_y + 70
-            ),
-            (
-                boss_x + 10,
-                boss_y + 30
-            )
+            (boss_x + 20, boss_y - 25),
+            (boss_x + 120, boss_y - 100),
+            (boss_x + 80, boss_y - 5),
+            (boss_x + 125, boss_y + 70),
+            (boss_x + 10, boss_y + 30)
         ]
     )
 
@@ -853,50 +750,26 @@ def draw_boss():
         screen,
         (105, 25, 110),
         [
-            (
-                boss_x - 40,
-                boss_y - 55
-            ),
-            (
-                boss_x - 20,
-                boss_y - 95
-            ),
-            (
-                boss_x - 5,
-                boss_y - 60
-            ),
-            (
-                boss_x + 5,
-                boss_y - 60
-            ),
-            (
-                boss_x + 20,
-                boss_y - 95
-            ),
-            (
-                boss_x + 40,
-                boss_y - 55
-            )
+            (boss_x - 40, boss_y - 55),
+            (boss_x - 20, boss_y - 95),
+            (boss_x - 5, boss_y - 60),
+            (boss_x + 5, boss_y - 60),
+            (boss_x + 20, boss_y - 95),
+            (boss_x + 40, boss_y - 55)
         ]
     )
 
     pygame.draw.circle(
         screen,
         RED,
-        (
-            boss_x - 25,
-            boss_y - 15
-        ),
+        (boss_x - 25, boss_y - 15),
         9
     )
 
     pygame.draw.circle(
         screen,
         RED,
-        (
-            boss_x + 25,
-            boss_y - 15
-        ),
+        (boss_x + 25, boss_y - 15),
         9
     )
 
@@ -939,9 +812,7 @@ def draw_boss():
     )
 
     hp_width = int(
-        bar_w
-        * boss_hp
-        / boss_max_hp
+        bar_w * boss_hp / boss_max_hp
     )
 
     pygame.draw.rect(
@@ -963,60 +834,38 @@ def draw_boss():
 
     screen.blit(
         text,
-        (
-            bar_x + 18,
-            bar_y + 5
-        )
+        (bar_x + 18, bar_y + 5)
     )
 
-def draw_fireball(
-    x,
-    y,
-    player=False
-):
+
+def draw_fireball(x, y, player=False):
 
     if player:
-        colors = [
-            CYAN,
-            BLUE,
-            WHITE
-        ]
+        colors = [CYAN, BLUE, WHITE]
     else:
-        colors = [
-            RED,
-            ORANGE,
-            YELLOW
-        ]
+        colors = [RED, ORANGE, YELLOW]
 
     pygame.draw.circle(
         screen,
         colors[0],
-        (
-            int(x),
-            int(y)
-        ),
+        (int(x), int(y)),
         12
     )
 
     pygame.draw.circle(
         screen,
         colors[1],
-        (
-            int(x),
-            int(y)
-        ),
+        (int(x), int(y)),
         8
     )
 
     pygame.draw.circle(
         screen,
         colors[2],
-        (
-            int(x),
-            int(y)
-        ),
+        (int(x), int(y)),
         4
     )
+
 
 def draw_boss_hit_effects():
 
@@ -1027,50 +876,26 @@ def draw_boss_hit_effects():
         age = now - effect["start"]
 
         if age > 450:
-            boss_hit_effects.remove(
-                effect
-            )
+            boss_hit_effects.remove(effect)
             continue
 
-        radius = 10 + int(
-            age / 4
-        )
+        radius = 10 + int(age / 4)
 
         pygame.draw.circle(
             screen,
             YELLOW,
-            (
-                effect["x"],
-                effect["y"]
-            ),
+            (effect["x"], effect["y"]),
             radius,
             4
         )
 
         for i in range(8):
 
-            angle = (
-                i
-                * math.pi
-                / 4
-            )
+            angle = i * math.pi / 4
+            length = 20 + age // 5
 
-            length = (
-                20
-                + age // 5
-            )
-
-            x2 = (
-                effect["x"]
-                + math.cos(angle)
-                * length
-            )
-
-            y2 = (
-                effect["y"]
-                + math.sin(angle)
-                * length
-            )
+            x2 = effect["x"] + math.cos(angle) * length
+            y2 = effect["y"] + math.sin(angle) * length
 
             pygame.draw.line(
                 screen,
@@ -1086,7 +911,9 @@ def draw_boss_hit_effects():
                 3
             )
 
+
 menu_time = 0
+
 
 def draw_menu():
 
@@ -1135,11 +962,7 @@ def draw_menu():
             60
         )
 
-        for x in range(
-            0,
-            WIDTH,
-            120
-        ):
+        for x in range(0, WIDTH, 120):
 
             pygame.draw.rect(
                 screen,
@@ -1156,18 +979,9 @@ def draw_menu():
                 screen,
                 (20, 18, 35),
                 [
-                    (
-                        x,
-                        390
-                    ),
-                    (
-                        x + 37,
-                        340
-                    ),
-                    (
-                        x + 75,
-                        390
-                    )
+                    (x, 390),
+                    (x + 37, 340),
+                    (x + 75, 390)
                 ]
             )
 
@@ -1180,8 +994,7 @@ def draw_menu():
     screen.blit(
         title,
         (
-            WIDTH // 2
-            - title.get_width() // 2,
+            WIDTH // 2 - title.get_width() // 2,
             65
         )
     )
@@ -1195,16 +1008,13 @@ def draw_menu():
     screen.blit(
         subtitle,
         (
-            WIDTH // 2
-            - subtitle.get_width() // 2,
+            WIDTH // 2 - subtitle.get_width() // 2,
             150
         )
     )
 
     bob = int(
-        math.sin(
-            menu_time / 15
-        ) * 8
+        math.sin(menu_time / 15) * 8
     )
 
     screen.blit(
@@ -1216,15 +1026,11 @@ def draw_menu():
     )
 
     pulse = int(
-        math.sin(
-            menu_time / 10
-        ) * 5
+        math.sin(menu_time / 10) * 5
     )
 
     button = pygame.Rect(
-        WIDTH // 2
-        - 150
-        - pulse,
+        WIDTH // 2 - 150 - pulse,
         330 - pulse,
         300 + pulse * 2,
         70 + pulse * 2
@@ -1254,8 +1060,7 @@ def draw_menu():
     screen.blit(
         start,
         (
-            WIDTH // 2
-            - start.get_width() // 2,
+            WIDTH // 2 - start.get_width() // 2,
             342
         )
     )
@@ -1269,8 +1074,7 @@ def draw_menu():
     screen.blit(
         controls,
         (
-            WIDTH // 2
-            - controls.get_width() // 2,
+            WIDTH // 2 - controls.get_width() // 2,
             445
         )
     )
@@ -1284,11 +1088,11 @@ def draw_menu():
     screen.blit(
         info,
         (
-            WIDTH // 2
-            - info.get_width() // 2,
+            WIDTH // 2 - info.get_width() // 2,
             480
         )
     )
+
 
 def draw_hud():
 
@@ -1310,12 +1114,6 @@ def draw_hud():
         CYAN
     )
 
-    hearts_text = font.render(
-        f"HEARTS: {hearts}",
-        True,
-        RED
-    )
-
     screen.blit(
         score_text,
         (20, 20)
@@ -1335,14 +1133,23 @@ def draw_hud():
         )
     )
 
+    hearts_label = font_small.render(
+        "LIVES",
+        True,
+        WHITE
+    )
+
     screen.blit(
-        hearts_text,
+        hearts_label,
         (
-            WIDTH
-            - hearts_text.get_width()
-            - 20,
-            20
+            WIDTH - 140,
+            18
         )
+    )
+
+    draw_hearts(
+        WIDTH - 140,
+        45
     )
 
     if combo > 0:
@@ -1383,6 +1190,7 @@ def draw_hud():
             )
         )
 
+
 def draw_game_over():
 
     overlay = pygame.Surface(
@@ -1408,8 +1216,7 @@ def draw_game_over():
     screen.blit(
         title,
         (
-            WIDTH // 2
-            - title.get_width() // 2,
+            WIDTH // 2 - title.get_width() // 2,
             110
         )
     )
@@ -1429,8 +1236,7 @@ def draw_game_over():
     screen.blit(
         score_text,
         (
-            WIDTH // 2
-            - score_text.get_width() // 2,
+            WIDTH // 2 - score_text.get_width() // 2,
             220
         )
     )
@@ -1438,8 +1244,7 @@ def draw_game_over():
     screen.blit(
         high_text,
         (
-            WIDTH // 2
-            - high_text.get_width() // 2,
+            WIDTH // 2 - high_text.get_width() // 2,
             285
         )
     )
@@ -1453,18 +1258,110 @@ def draw_game_over():
     screen.blit(
         restart,
         (
-            WIDTH // 2
-            - restart.get_width() // 2,
+            WIDTH // 2 - restart.get_width() // 2,
             400
         )
     )
 
-victory_sound_played = False
 
 def draw_victory():
 
+    # Keep the original victory theme.
+    # Only add subtle polish: glow, particles, border and dragon.
+
     screen.fill(
         (15, 35, 25)
+    )
+
+    # Soft green/gold glow behind the title
+    glow = pygame.Surface(
+        (WIDTH, HEIGHT),
+        pygame.SRCALPHA
+    )
+
+    for radius, alpha in [
+        (180, 12),
+        (140, 18),
+        (100, 25)
+    ]:
+        pygame.draw.circle(
+            glow,
+            (255, 190, 55, alpha),
+            (WIDTH // 2, 125),
+            radius
+        )
+
+    screen.blit(
+        glow,
+        (0, 0)
+    )
+
+    # Small magical sparkles
+    now = pygame.time.get_ticks()
+
+    for i in range(18):
+
+        angle = (
+            now / 900
+            + i * 0.75
+        )
+
+        radius = 170 + (i % 4) * 35
+
+        sparkle_x = (
+            WIDTH // 2
+            + math.cos(angle) * radius
+        )
+
+        sparkle_y = (
+            280
+            + math.sin(angle) * radius * 0.55
+        )
+
+        sparkle_size = 2 + (i % 3)
+
+        pygame.draw.circle(
+            screen,
+            GOLD if i % 2 == 0 else CYAN,
+            (
+                int(sparkle_x),
+                int(sparkle_y)
+            ),
+            sparkle_size
+        )
+
+    # Title glow
+    title_glow = font_huge.render(
+        "VICTORY!",
+        True,
+        (255, 220, 90)
+    )
+
+    glow_rect = title_glow.get_rect(
+        center=(
+            WIDTH // 2,
+            130
+        )
+    )
+
+    glow_layer = pygame.Surface(
+        (
+            title_glow.get_width() + 30,
+            title_glow.get_height() + 30
+        ),
+        pygame.SRCALPHA
+    )
+
+    glow_layer.fill(
+        (255, 190, 55, 18)
+    )
+
+    screen.blit(
+        glow_layer,
+        (
+            glow_rect.x - 15,
+            glow_rect.y - 15
+        )
     )
 
     title = font_huge.render(
@@ -1476,12 +1373,12 @@ def draw_victory():
     screen.blit(
         title,
         (
-            WIDTH // 2
-            - title.get_width() // 2,
+            WIDTH // 2 - title.get_width() // 2,
             90
         )
     )
 
+    # Original subtitle
     subtitle = font_big.render(
         "LEGENDARY DRAGON",
         True,
@@ -1491,10 +1388,32 @@ def draw_victory():
     screen.blit(
         subtitle,
         (
-            WIDTH // 2
-            - subtitle.get_width() // 2,
+            WIDTH // 2 - subtitle.get_width() // 2,
             190
         )
+    )
+
+    # Small decorative line
+    pygame.draw.line(
+        screen,
+        GOLD,
+        (300, 245),
+        (600, 245),
+        2
+    )
+
+    pygame.draw.circle(
+        screen,
+        GOLD,
+        (300, 245),
+        4
+    )
+
+    pygame.draw.circle(
+        screen,
+        GOLD,
+        (600, 245),
+        4
     )
 
     message = font.render(
@@ -1506,10 +1425,26 @@ def draw_victory():
     screen.blit(
         message,
         (
-            WIDTH // 2
-            - message.get_width() // 2,
+            WIDTH // 2 - message.get_width() // 2,
             260
         )
+    )
+
+    # Keep the dragon image from the actual game
+    dragon_bob = int(
+        math.sin(now / 300) * 5
+    )
+
+    dragon_rect = dragon_image.get_rect(
+        center=(
+            WIDTH // 2,
+            315 + dragon_bob
+        )
+    )
+
+    screen.blit(
+        dragon_image,
+        dragon_rect
     )
 
     score_text = font.render(
@@ -1527,19 +1462,40 @@ def draw_victory():
     screen.blit(
         score_text,
         (
-            WIDTH // 2
-            - score_text.get_width() // 2,
-            330
+            WIDTH // 2 - score_text.get_width() // 2,
+            365
         )
     )
 
     screen.blit(
         high_text,
         (
-            WIDTH // 2
-            - high_text.get_width() // 2,
-            370
+            WIDTH // 2 - high_text.get_width() // 2,
+            405
         )
+    )
+
+    # Slightly polished restart panel
+    restart_box = pygame.Rect(
+        WIDTH // 2 - 180,
+        455,
+        360,
+        58
+    )
+
+    pygame.draw.rect(
+        screen,
+        (25, 55, 40),
+        restart_box,
+        border_radius=14
+    )
+
+    pygame.draw.rect(
+        screen,
+        CYAN,
+        restart_box,
+        2,
+        border_radius=14
     )
 
     restart = font.render(
@@ -1551,11 +1507,11 @@ def draw_victory():
     screen.blit(
         restart,
         (
-            WIDTH // 2
-            - restart.get_width() // 2,
-            455
+            WIDTH // 2 - restart.get_width() // 2,
+            470
         )
     )
+
 
 def draw_pause():
 
@@ -1582,8 +1538,7 @@ def draw_pause():
     screen.blit(
         title,
         (
-            WIDTH // 2
-            - title.get_width() // 2,
+            WIDTH // 2 - title.get_width() // 2,
             210
         )
     )
@@ -1597,11 +1552,11 @@ def draw_pause():
     screen.blit(
         text,
         (
-            WIDTH // 2
-            - text.get_width() // 2,
+            WIDTH // 2 - text.get_width() // 2,
             320
         )
     )
+
 
 def draw_level_transition():
 
@@ -1613,34 +1568,56 @@ def draw_level_transition():
     if elapsed > level_transition_duration:
         return
 
-    overlay = pygame.Surface(
-        (WIDTH, HEIGHT),
-        pygame.SRCALPHA
-    )
-
-    overlay.fill(
-        (10, 5, 25, 170)
-    )
-
-    screen.blit(
-        overlay,
-        (0, 0)
-    )
-
-    if level == 2:
+    if level == 1:
+        title = "LEVEL 1"
+        subtitle = "ENCHANTED FOREST"
+    elif level == 2:
         title = "LEVEL 2"
         subtitle = "CURSED CASTLE"
     else:
         title = "LEVEL 3"
         subtitle = "LAVA FORTRESS"
 
-    title_surface = font_huge.render(
+    box_width = 360
+    box_height = 82
+
+    box_x = WIDTH // 2 - box_width // 2
+    box_y = 78
+
+    panel = pygame.Surface(
+        (box_width, box_height),
+        pygame.SRCALPHA
+    )
+
+    panel.fill(
+        (20, 10, 35, 220)
+    )
+
+    screen.blit(
+        panel,
+        (box_x, box_y)
+    )
+
+    pygame.draw.rect(
+        screen,
+        GOLD,
+        (
+            box_x,
+            box_y,
+            box_width,
+            box_height
+        ),
+        3,
+        border_radius=14
+    )
+
+    title_surface = font.render(
         title,
         True,
         GOLD
     )
 
-    subtitle_surface = font_big.render(
+    subtitle_surface = font_small.render(
         subtitle,
         True,
         WHITE
@@ -1651,7 +1628,7 @@ def draw_level_transition():
         (
             WIDTH // 2
             - title_surface.get_width() // 2,
-            210
+            box_y + 8
         )
     )
 
@@ -1660,24 +1637,154 @@ def draw_level_transition():
         (
             WIDTH // 2
             - subtitle_surface.get_width() // 2,
-            300
+            box_y + 48
         )
     )
 
-    hint = font_small.render(
-        "THE JOURNEY GETS HARDER...",
-        True,
-        CYAN
+
+def draw_countdown():
+
+    elapsed = (
+        pygame.time.get_ticks()
+        - countdown_start_time
+    )
+
+    if elapsed < 1000:
+        number = "3"
+        color = GOLD
+    elif elapsed < 2000:
+        number = "2"
+        color = ORANGE
+    elif elapsed < 3000:
+        number = "1"
+        color = RED
+    else:
+        number = "GO!"
+        color = GREEN
+
+    overlay = pygame.Surface(
+        (WIDTH, HEIGHT),
+        pygame.SRCALPHA
+    )
+
+    overlay.fill(
+        (5, 5, 20, 120)
     )
 
     screen.blit(
-        hint,
+        overlay,
+        (0, 0)
+    )
+
+    title = font_huge.render(
+        number,
+        True,
+        color
+    )
+
+    screen.blit(
+        title,
         (
             WIDTH // 2
-            - hint.get_width() // 2,
-            365
+            - title.get_width() // 2,
+            220
         )
     )
+
+    if number != "GO!":
+        text = font.render(
+            "GET READY!",
+            True,
+            WHITE
+        )
+    else:
+        text = font_big.render(
+            "FLY!",
+            True,
+            WHITE
+        )
+
+    screen.blit(
+        text,
+        (
+            WIDTH // 2
+            - text.get_width() // 2,
+            330
+        )
+    )
+
+
+def draw_game_objects():
+
+    draw_background()
+
+    for tower in towers:
+
+        screen.blit(
+            tower_top_image,
+            (
+                tower["x"],
+                tower["top_height"] - 470
+            )
+        )
+
+        screen.blit(
+            tower_bottom_image,
+            (
+                tower["x"],
+                tower["top_height"]
+                + tower["gap"]
+            )
+        )
+
+    for gem in gems:
+
+        if not gem["collected"]:
+
+            bob = int(
+                math.sin(
+                    gem["angle"]
+                ) * 5
+            )
+
+            rotated = pygame.transform.rotate(
+                gem_image,
+                math.degrees(
+                    math.sin(
+                        gem["angle"]
+                    )
+                ) * 10
+            )
+
+            rect = rotated.get_rect(
+                center=(
+                    int(gem["x"] + 16),
+                    int(
+                        gem["y"]
+                        + 16
+                        + bob
+                    )
+                )
+            )
+
+            screen.blit(
+                rotated,
+                rect
+            )
+
+    draw_particles()
+    draw_gem_particles()
+
+    screen.blit(
+        dragon_image,
+        (
+            dragon_x,
+            int(dragon_y)
+        )
+    )
+
+    draw_hud()
+
 
 running = True
 
@@ -1710,15 +1817,18 @@ while running:
             else:
 
                 if event.key == pygame.K_p:
-                    paused = not paused
 
-                elif not paused:
+                    if not countdown_active:
+                        paused = not paused
+
+                elif (
+                    not paused
+                    and not countdown_active
+                ):
 
                     if event.key == pygame.K_SPACE:
 
-                        dragon_velocity = (
-                            flap_strength
-                        )
+                        dragon_velocity = flap_strength
 
                         play_sound(
                             flap_sound
@@ -1732,8 +1842,7 @@ while running:
                         )
 
                     if (
-                        event.key
-                        == pygame.K_f
+                        event.key == pygame.K_f
                         and boss_fight
                     ):
 
@@ -1765,7 +1874,6 @@ while running:
     if game_over:
 
         draw_background()
-
         draw_game_over()
 
         pygame.display.flip()
@@ -1790,57 +1898,48 @@ while running:
 
     if paused:
 
-        draw_background()
-
-        for tower in towers:
-
-            screen.blit(
-                tower_top_image,
-                (
-                    tower["x"],
-                    tower["top_height"]
-                    - 470
-                )
-            )
-
-            screen.blit(
-                tower_bottom_image,
-                (
-                    tower["x"],
-                    tower["top_height"]
-                    + tower["gap"]
-                )
-            )
-
-        for gem in gems:
-
-            if not gem["collected"]:
-
-                screen.blit(
-                    gem_image,
-                    (
-                        gem["x"],
-                        gem["y"]
-                    )
-                )
-
-        screen.blit(
-            dragon_image,
-            (
-                dragon_x,
-                int(dragon_y)
-            )
-        )
-
-        draw_hud()
-
+        draw_game_objects()
         draw_pause()
 
         pygame.display.flip()
 
         continue
 
+    if countdown_active:
+
+        elapsed = (
+            now
+            - countdown_start_time
+        )
+
+        draw_game_objects()
+        draw_countdown()
+
+        pygame.display.flip()
+
+        if elapsed >= countdown_duration:
+
+            countdown_active = False
+            dragon_velocity = 0
+
+            level_transition = True
+            level_transition_timer = now
+
+            play_sound(level_sound)
+
+        continue
+
     update_level()
+
+    if level_transition:
+
+        if (
+            now
+            - level_transition_timer
+            > level_transition_duration
+        ):
+
+            level_transition = False
 
     if (
         score >= 30
@@ -1849,7 +1948,6 @@ while running:
     ):
 
         boss_warning = True
-
         warning_start_time = now
 
         play_sound(
@@ -1967,8 +2065,7 @@ while running:
                         WIDTH
                         + 150
                     )
-                )
-                * progress
+                ) * progress
             )
 
             if progress >= 1:
@@ -1979,8 +2076,7 @@ while running:
             boss_y += (
                 math.sin(
                     now / 500
-                )
-                * 1.5
+                ) * 1.5
             )
 
             boss_y = max(
@@ -2068,7 +2164,6 @@ while running:
                 if boss_hp <= 0:
 
                     boss_hp = 0
-
                     victory = True
 
                     update_high_score()
@@ -2108,25 +2203,13 @@ while running:
                 fire_rect
             ):
 
-                hearts -= 1
-
-                combo = 0
-                combo_multiplier = 1
-
-                damage_effect()
-
-                play_sound(
-                    hit_sound
-                )
+                lose_heart()
 
                 boss_fireballs.remove(
                     fireball
                 )
 
-                if hearts <= 0:
-
-                    game_over = True
-
+                if game_over:
                     update_high_score()
 
         dragon_velocity += gravity
@@ -2141,31 +2224,16 @@ while running:
 
             dragon_y = HEIGHT - 60
 
-            hearts -= 1
+            lose_heart()
 
-            combo = 0
-            combo_multiplier = 1
+            dragon_velocity = flap_strength
 
-            damage_effect()
-
-            dragon_velocity = (
-                flap_strength
-            )
-
-            play_sound(
-                hit_sound
-            )
-
-            if hearts <= 0:
-
-                game_over = True
-
+            if game_over:
                 update_high_score()
 
         update_fire_trails()
 
         draw_fire_trails()
-
         draw_boss()
 
         for fireball in player_fireballs:
@@ -2206,7 +2274,7 @@ while running:
         )
 
         instruction = font_small.render(
-            "F = FIREBALL  •  DEFEAT THE DARK DRAGON!",
+            "F = FIREBALL  •  5 HITS TO DEFEAT!",
             True,
             WHITE
         )
@@ -2216,15 +2284,20 @@ while running:
             (20, 58)
         )
 
-        hearts_text = font.render(
-            f"HEARTS: {hearts}",
+        hearts_label = font_small.render(
+            "LIVES",
             True,
-            RED
+            WHITE
         )
 
         screen.blit(
-            hearts_text,
+            hearts_label,
             (20, 95)
+        )
+
+        draw_hearts(
+            20,
+            120
         )
 
         pygame.display.flip()
@@ -2245,25 +2318,11 @@ while running:
 
         dragon_y = HEIGHT - 60
 
-        hearts -= 1
+        lose_heart()
 
-        combo = 0
-        combo_multiplier = 1
+        dragon_velocity = flap_strength
 
-        damage_effect()
-
-        dragon_velocity = (
-            flap_strength
-        )
-
-        play_sound(
-            hit_sound
-        )
-
-        if hearts <= 0:
-
-            game_over = True
-
+        if game_over:
             update_high_score()
 
     spawn_timer += 1
@@ -2281,10 +2340,8 @@ while running:
 
     if level == 1:
         speed = 4
-
     elif level == 2:
         speed = 5
-
     else:
         speed = 6
 
@@ -2319,21 +2376,12 @@ while running:
         )
 
         if (
-            dragon_rect.colliderect(
-                top_rect
-            )
+            dragon_rect.colliderect(top_rect)
             or
-            dragon_rect.colliderect(
-                bottom_rect
-            )
+            dragon_rect.colliderect(bottom_rect)
         ):
 
-            hearts -= 1
-
-            combo = 0
-            combo_multiplier = 1
-
-            damage_effect()
+            lose_heart()
 
             particle_burst(
                 dragon_x,
@@ -2342,16 +2390,9 @@ while running:
                 12
             )
 
-            play_sound(
-                hit_sound
-            )
-
             tower["x"] = -300
 
-            if hearts <= 0:
-
-                game_over = True
-
+            if game_over:
                 update_high_score()
 
         if (
@@ -2374,7 +2415,6 @@ while running:
     for gem in gems[:]:
 
         gem["x"] -= speed
-
         gem["angle"] += 0.08
 
         if gem["collected"]:
@@ -2408,95 +2448,10 @@ while running:
     update_gem_particles()
     update_fire_trails()
 
-    draw_background()
-
-    for tower in towers:
-
-        screen.blit(
-            tower_top_image,
-            (
-                tower["x"],
-                tower["top_height"]
-                - 470
-            )
-        )
-
-        screen.blit(
-            tower_bottom_image,
-            (
-                tower["x"],
-                tower["top_height"]
-                + tower["gap"]
-            )
-        )
-
-    for gem in gems:
-
-        if not gem["collected"]:
-
-            bob = int(
-                math.sin(
-                    gem["angle"]
-                )
-                * 5
-            )
-
-            rotated = (
-                pygame.transform.rotate(
-                    gem_image,
-                    math.degrees(
-                        math.sin(
-                            gem["angle"]
-                        )
-                    )
-                    * 10
-                )
-            )
-
-            rect = rotated.get_rect(
-                center=(
-                    int(
-                        gem["x"] + 16
-                    ),
-                    int(
-                        gem["y"]
-                        + 16
-                        + bob
-                    )
-                )
-            )
-
-            screen.blit(
-                rotated,
-                rect
-            )
-
-    draw_particles()
-    draw_gem_particles()
-
-    screen.blit(
-        dragon_image,
-        (
-            dragon_x,
-            int(dragon_y)
-        )
-    )
-
-    draw_hud()
+    draw_game_objects()
 
     if level_transition:
-
-        if (
-            now
-            - level_transition_timer
-            <= level_transition_duration
-        ):
-
-            draw_level_transition()
-
-        else:
-
-            level_transition = False
+        draw_level_transition()
 
     if screen_shake > 0:
         screen_shake -= 1

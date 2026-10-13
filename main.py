@@ -1,10 +1,6 @@
 import pygame
 import random
 import math
-import io
-import wave
-import struct
-
 pygame.mixer.pre_init(44100, -16, 1, 512)
 pygame.init()
 
@@ -80,53 +76,15 @@ tower_bottom_image = pygame.transform.smoothscale(
 )
 
 
-def create_tone(frequency, duration, volume=0.25):
+def load_sound(filename):
     if not SOUND_ENABLED:
         return None
 
-    rate = 44100
-    samples = int(rate * duration)
-    data = bytearray()
-
-    for i in range(samples):
-        t = i / rate
-
-        fade_in = min(
-            1,
-            i / max(1, int(rate * 0.02))
-        )
-
-        fade_out = min(
-            1,
-            (samples - i) / max(1, int(rate * 0.05))
-        )
-
-        envelope = fade_in * fade_out
-
-        value = int(
-            32767
-            * volume
-            * envelope
-            * math.sin(
-                2 * math.pi * frequency * t
-            )
-        )
-
-        data.extend(struct.pack("<h", value))
-
-    buffer = io.BytesIO()
-
-    with wave.open(buffer, "wb") as wav:
-        wav.setnchannels(1)
-        wav.setsampwidth(2)
-        wav.setframerate(rate)
-        wav.writeframes(data)
-
     try:
         return pygame.mixer.Sound(
-            buffer=buffer.getvalue()
+            "assets/" + filename
         )
-    except pygame.error:
+    except (pygame.error, FileNotFoundError):
         return None
 
 
@@ -138,14 +96,38 @@ def play_sound(sound):
             pass
 
 
-flap_sound = create_tone(520, 0.08, 0.22)
-gem_sound = create_tone(900, 0.12, 0.25)
-hit_sound = create_tone(150, 0.18, 0.28)
-fireball_sound = create_tone(240, 0.10, 0.20)
-boss_hit_sound = create_tone(750, 0.10, 0.25)
-warning_sound = create_tone(300, 0.35, 0.25)
-victory_sound = create_tone(1000, 0.45, 0.25)
-level_sound = create_tone(650, 0.22, 0.22)
+flap_sound = load_sound("flap.ogg")
+gem_sound = load_sound("gem.ogg")
+hit_sound = load_sound("hit.ogg")
+fireball_sound = load_sound("fireball.ogg")
+boss_hit_sound = load_sound("boss_hit.ogg")
+warning_sound = load_sound("warning.ogg")
+victory_sound = load_sound("victory.ogg")
+level_sound = load_sound("level.ogg")
+    try:
+        return pygame.mixer.Sound(
+            "assets/" + filename
+        )
+    except (pygame.error, FileNotFoundError):
+        return None
+
+
+def play_sound(sound):
+    if SOUND_ENABLED and sound:
+        try:
+            sound.play()
+        except pygame.error:
+            pass
+
+
+flap_sound = load_sound("flap.ogg")
+gem_sound = load_sound("gem.ogg")
+hit_sound = load_sound("hit.ogg")
+fireball_sound = load_sound("fireball.ogg")
+boss_hit_sound = load_sound("boss_hit.ogg")
+warning_sound = load_sound("warning.ogg")
+victory_sound = load_sound("victory.ogg")
+level_sound = load_sound("level.ogg")
 
 dragon_x = 180
 dragon_y = 300
